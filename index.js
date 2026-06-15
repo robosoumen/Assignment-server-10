@@ -30,9 +30,16 @@ async function run(){
         const allReviewCollection = assignmentTenDB.collection("allReview")
 
         // apis
-        app.post('/allReview',async(req, res) => {
+        app.post('/postReview',async(req, res) => {
             const newReview = req.body;
             const result = await allReviewCollection.insertOne(newReview);
+            res.send(result)
+        })
+
+        app.get('/allReview', async(req, res) => {
+            const sortField = {currentDate: -1}
+            const cursor = allReviewCollection.find().sort(sortField);
+            const result = await cursor.toArray();
             res.send(result)
         })
 
