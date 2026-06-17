@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -41,6 +41,50 @@ async function run(){
             const cursor = allReviewCollection.find().sort(sortField);
             const result = await cursor.toArray();
             res.send(result)
+        })
+
+        // user er review api
+        app.get('/userReview', async(req, res) => {
+            const email = req.query.email;
+            const query = {};
+            if(email){
+                query.userEmail = email
+            };
+            const cursor = allReviewCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // single review get
+        app.get('/userReview/:id', async(req, res) => {
+            const id = req.params.id;
+
+            const result = await allReviewCollection.findOne({
+                _id:new ObjectId(id)
+            })
+
+            res.send(result)
+
+        })
+
+        // delete user review
+        app.delete('/userReview/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : new ObjectId(id)};
+            const result = await allReviewCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // put operation
+        app.put('/userReview/:id', async(req,res) => {
+            const id = req.params.id;
+            const updatedReview = req.body;
+            const query = {_id : new ObjectId(id)};
+            const update = {
+                $set:updatedReview
+            };
+            const result = await allReviewCollection.updateMany(query, update);
+            res.send(result);
         })
 
         await client.db("admin").command({ ping: 1 });
