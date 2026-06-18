@@ -27,7 +27,8 @@ async function run(){
     try{
         await client.connect();
         const assignmentTenDB = client.db("assignmentTenDB");
-        const allReviewCollection = assignmentTenDB.collection("allReview")
+        const allReviewCollection = assignmentTenDB.collection("allReview");
+        const myFavoriteReviewCollection = assignmentTenDB.collection("FavoriteReview");
 
         // apis
         app.post('/postReview',async(req, res) => {
@@ -36,7 +37,7 @@ async function run(){
             res.send(result)
         })
 
-        app.get('/allReview', async(req, res) => {
+        app.get('/allReview',async(req, res) => {
             const sortField = {currentDate: -1}
             const cursor = allReviewCollection.find().sort(sortField);
             const result = await cursor.toArray();
@@ -86,6 +87,9 @@ async function run(){
             const result = await allReviewCollection.updateMany(query, update);
             res.send(result);
         })
+
+        // users favorite card api i need post api and get api
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
