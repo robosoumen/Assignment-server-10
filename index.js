@@ -56,6 +56,19 @@ async function run(){
             res.send(result);
         })
 
+        // users favorite card api i need post api and get api
+        app.post('/favorite', async(req, res) => {
+            const data = req.body;
+            const result = await myFavoriteReviewCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/my-favorite', async(req, res) => {
+            const email = req.query.email;
+            const result = await myFavoriteReviewCollection.find({userEmail:email}).toArray();
+            res.send(result);
+        })
+
         // single review get
         app.get('/userReview/:id', async(req, res) => {
             const id = req.params.id;
@@ -76,6 +89,14 @@ async function run(){
             res.send(result);
         })
 
+        // favorite page delete api
+        app.delete('/delete/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : new ObjectId(id)};
+            const result = await myFavoriteReviewCollection.deleteOne(query);
+            res.send(result);
+        })
+
         // put operation
         app.put('/userReview/:id', async(req,res) => {
             const id = req.params.id;
@@ -87,9 +108,6 @@ async function run(){
             const result = await allReviewCollection.updateMany(query, update);
             res.send(result);
         })
-
-        // users favorite card api i need post api and get api
-
 
         // search karar api
         app.get('/search', async(req, res) => {
