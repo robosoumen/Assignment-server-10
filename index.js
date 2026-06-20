@@ -38,7 +38,13 @@ async function run(){
         })
 
         app.get('/allReview',async(req, res) => {
-            const sortField = {currentDate: -1}
+            const sortField = {rating: -1}
+            const cursor = allReviewCollection.find().sort(sortField).limit(6);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        app.get('/allCard',async(req, res) => {
+            const sortField = {rating: -1}
             const cursor = allReviewCollection.find().sort(sortField);
             const result = await cursor.toArray();
             res.send(result)
