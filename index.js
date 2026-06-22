@@ -9,7 +9,6 @@ const port = process.env.PORT || 3000
 app.use(cors())
 app.use(express.json())
 
-// TFn1ejzKxQX7UPoZ   assignment-ten
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.kbxs8tk.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
@@ -26,7 +25,7 @@ app.get('/',(req,res) => {
 
 async function run(){
     try{
-        await client.connect();
+        // await client.connect();
         const assignmentTenDB = client.db("assignmentTenDB");
         const allReviewCollection = assignmentTenDB.collection("allReview");
         const myFavoriteReviewCollection = assignmentTenDB.collection("FavoriteReview");
@@ -63,16 +62,20 @@ async function run(){
             res.send(result);
         })
 
+        app.get('/my-favorite', async(req, res) => {
+            const email = req.query.email;
+            const query = {};
+            if(email){
+                query.userEmail = email
+            }
+            const result = await myFavoriteReviewCollection.find(query).toArray();
+            res.send(result);
+        })
+
         // users favorite card api i need post api and get api
         app.post('/favorite', async(req, res) => {
             const data = req.body;
             const result = await myFavoriteReviewCollection.insertOne(data);
-            res.send(result);
-        })
-
-        app.get('/my-favorite', async(req, res) => {
-            const email = req.query.email;
-            const result = await myFavoriteReviewCollection.find({userEmail:email}).toArray();
             res.send(result);
         })
 
